@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { createLazyFileRoute } from '@tanstack/react-router'
 import { useTasks } from '../hooks/useTasks'
 import { useDeleteTask } from '../hooks/useDeleteTask'
+import { useToggleTaskCompletion } from '../hooks/useToggleTaskCompletion'
 import { CreateTaskForm } from '../components/CreateTaskForm'
 import { EditTaskForm } from '../components/EditTaskForm'
 
@@ -13,6 +14,12 @@ function Index() {
   const { data, isLoading, error } = useTasks()
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
   const deleteTask = useDeleteTask()
+  const toggleCompletion = useToggleTaskCompletion()
+
+  // タスクを作成日時の降順でソート
+  const sortedTasks = [...(data?.tasks || [])].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
 
   const handleDelete = async (id: string) => {
     if (window.confirm('このタスクを削除してもよろしいですか？')) {
@@ -21,6 +28,14 @@ function Index() {
       } catch (error) {
         console.error('Failed to delete task:', error)
       }
+    }
+  }
+
+  const handleToggleCompletion = async (id: string) => {
+    try {
+      await toggleCompletion.mutateAsync(id)
+    } catch (error) {
+      console.error('Failed to toggle task completion:', error)
     }
   }
 
@@ -45,7 +60,7 @@ function Index() {
           Task List
         </h2>
         <ul className="space-y-3">
-          {data?.tasks.map((task) => (
+          {sortedTasks.map((task) => (
             <li
               key={task.id}
               className="p-4 bg-gray-50 shadow-sm rounded-lg border border-gray-100"
@@ -61,8 +76,9 @@ function Index() {
                     <input
                       type="checkbox"
                       checked={task.completed}
-                      readOnly
-                      className="h-4 w-4"
+                      onChange={() => handleToggleCompletion(task.id)}
+                      disabled={toggleCompletion.isPending}
+                      className="h-4 w-4 cursor-pointer"
                     />
                     <span className={task.completed ? 'line-through text-gray-500' : ''}>
                       {task.title}

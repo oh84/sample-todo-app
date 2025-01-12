@@ -52,3 +52,16 @@ export const DELETE_TASK = gql`
     }
   }
 `
+
+export const TOGGLE_TASK_COMPLETION = gql`
+  mutation ToggleTaskCompletion($id: ID!) {
+    toggleTaskCompletion(id: $id) {
+      task {
+        id
+        completed
+        updatedAt
+      }
+      errors
+    }
+  }
+`
