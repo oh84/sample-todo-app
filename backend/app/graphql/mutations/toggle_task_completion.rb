@@ -9,7 +9,7 @@ module Mutations
 
     def resolve(id:)
       task = Task.find(id)
-      
+
       if task.update(completed: !task.completed)
         {
           task: task,
@@ -28,4 +28,4 @@ module Mutations
       }
     end
   end
-end 
+end

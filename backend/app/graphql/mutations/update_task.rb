@@ -12,7 +12,7 @@ module Mutations
 
     def resolve(id:, **attributes)
       task = Task.find(id)
-      
+
       if task.update(attributes)
         {
           task: task,
