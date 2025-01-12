@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import { useCreateTask } from '../hooks/useCreateTask'
 
-export function CreateTaskForm() {
+interface CreateTaskFormProps {
+  onSuccess?: () => void
+}
+
+export function CreateTaskForm({ onSuccess }: CreateTaskFormProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const createTask = useCreateTask()
@@ -15,9 +19,9 @@ export function CreateTaskForm() {
         title: title.trim(),
         description: description.trim() || undefined,
       })
-      // フォームをリセット
       setTitle('')
       setDescription('')
+      onSuccess?.()
     } catch (error) {
       console.error('Failed to create task:', error)
     }

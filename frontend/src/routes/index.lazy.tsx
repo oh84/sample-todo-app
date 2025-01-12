@@ -5,14 +5,17 @@ import { useDeleteTask } from '../hooks/useDeleteTask'
 import { useToggleTaskCompletion } from '../hooks/useToggleTaskCompletion'
 import { CreateTaskForm } from '../components/CreateTaskForm'
 import { EditTaskForm } from '../components/EditTaskForm'
+import { Modal } from '../components/Modal'
 
 export const Route = createLazyFileRoute('/')({
   component: Index,
 })
 
 function Index() {
-  const { data, isLoading, error } = useTasks()
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+
+  const { data, isLoading, error } = useTasks()
   const deleteTask = useDeleteTask()
   const toggleCompletion = useToggleTaskCompletion()
 
@@ -44,14 +47,14 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <h1 className="text-2xl font-bold mb-6">Tasks</h1>
-
-      {/* タスク作成フォーム */}
-      <div className="bg-white p-6 rounded-lg shadow-lg mb-8 border border-gray-200">
-        <h2 className="text-lg font-semibold mb-4 pb-2 border-b border-gray-200">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Tasks</h1>
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
           Create New Task
-        </h2>
-        <CreateTaskForm />
+        </button>
       </div>
 
       {/* タスク一覧 */}
@@ -108,6 +111,17 @@ function Index() {
           ))}
         </ul>
       </div>
+
+      {/* タスク作成モーダル */}
+      <Modal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        title="Create New Task"
+      >
+        <CreateTaskForm
+          onSuccess={() => setIsCreateModalOpen(false)}
+        />
+      </Modal>
     </div>
   )
 }
