@@ -48,3 +48,8 @@ end
 # GraphQL関連
 gem 'graphql'
 gem 'graphiql-rails'
+gem 'rack-cors'
+
+# アセットパイプライン関連
+gem 'sprockets'
+gem 'sprockets-rails'
