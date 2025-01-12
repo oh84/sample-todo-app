@@ -8,5 +8,8 @@ module Types
 
     # タスク更新
     field :update_task, mutation: Mutations::UpdateTask, description: "Update a task"
+
+    # タスク削除
+    field :delete_task, mutation: Mutations::DeleteTask, description: "Delete a task"
   end
 end
