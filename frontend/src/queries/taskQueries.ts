@@ -12,3 +12,19 @@ export const GET_TASKS = gql`
     }
   }
 `
+
+export const CREATE_TASK = gql`
+  mutation CreateTask($title: String!, $description: String, $completed: Boolean) {
+    createTask(title: $title, description: $description, completed: $completed) {
+      task {
+        id
+        title
+        description
+        completed
+        createdAt
+        updatedAt
+      }
+      errors
+    }
+  }
+`
