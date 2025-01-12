@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { createLazyFileRoute } from '@tanstack/react-router'
 import { useTasks } from '../hooks/useTasks'
 import { CreateTaskForm } from '../components/CreateTaskForm'
+import { EditTaskForm } from '../components/EditTaskForm'
 
 export const Route = createLazyFileRoute('/')({
   component: Index,
@@ -8,6 +10,7 @@ export const Route = createLazyFileRoute('/')({
 
 function Index() {
   const { data, isLoading, error } = useTasks()
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
 
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
@@ -35,19 +38,34 @@ function Index() {
               key={task.id}
               className="p-4 bg-gray-50 shadow-sm rounded-lg border border-gray-100"
             >
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  readOnly
-                  className="h-4 w-4"
+              {editingTaskId === task.id ? (
+                <EditTaskForm
+                  task={task}
+                  onCancel={() => setEditingTaskId(null)}
                 />
-                <span className={task.completed ? 'line-through text-gray-500' : ''}>
-                  {task.title}
-                </span>
-              </div>
-              {task.description && (
-                <p className="mt-1 text-sm text-gray-600">{task.description}</p>
+              ) : (
+                <div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={task.completed}
+                      readOnly
+                      className="h-4 w-4"
+                    />
+                    <span className={task.completed ? 'line-through text-gray-500' : ''}>
+                      {task.title}
+                    </span>
+                    <button
+                      onClick={() => setEditingTaskId(task.id)}
+                      className="ml-auto text-sm text-indigo-600 hover:text-indigo-800"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                  {task.description && (
+                    <p className="mt-1 text-sm text-gray-600">{task.description}</p>
+                  )}
+                </div>
               )}
             </li>
           ))}
