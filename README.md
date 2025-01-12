@@ -29,12 +29,11 @@ GraphQLを使用したTODOアプリです。
 ### バックエンドの起動
 
 ```bash
-# backendディレクトリに移動
-cd backend
 # 開発環境の構築
 docker compose build backend
 docker compose run --rm backend bundle install
 docker compose run --rm backend rails db:create db:migrate
+
 # サーバーの起動
 docker compose up backend
 ```
@@ -45,14 +44,16 @@ GraphQL PlaygroundはGraphiQLで http://localhost:3000/graphiql から利用で�
 ### フロントエンドの起動
 
 ```bash
-# frontendディレクトリに移動
-cd frontend
 # node_modulesディレクトリを作成
 # 参考: https://serip39.hatenablog.com/entry/2022/08/10/120000
-mkdir node_modules
+mkdir frontend/node_modules
+
 # 開発環境の構築
 docker compose build frontend
 docker compose run --rm frontend npm install
+# ↑はリポジトリ直下で実行する
+# 失敗してしまった場合は再実行する前に docker compose down frontend -v でボリュームを削除する
+
 # 開発サーバーの起動
 docker compose up frontend
 ```
