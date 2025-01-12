@@ -11,5 +11,8 @@ module Types
 
     # タスク削除
     field :delete_task, mutation: Mutations::DeleteTask, description: "Delete a task"
+
+    # タスク完了状態の切り替え
+    field :toggle_task_completion, mutation: Mutations::ToggleTaskCompletion, description: "Toggle task completion"
   end
 end
