@@ -21,11 +21,22 @@ module Types
     # Add root-level fields here.
     # They will be entry points for queries on your schema.
 
-    # TODO: remove me
-    field :hello, String, null: false,
-      description: "Hello world"
-    def hello
-      "Hello World!"
+    # タスク一覧取得
+
+    field :tasks, [Types::TaskType], null: false, description: "Returns a list of tasks"
+
+    def tasks
+      Task.all
+    end
+
+    # タスク取得
+
+    field :task, Types::TaskType, null: true, description: "Returns a task" do
+      argument :id, ID, required: true
+    end
+
+    def task(id:)
+      Task.find(id)
     end
   end
 end
