@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { createLazyFileRoute } from '@tanstack/react-router'
 import { useTasks } from '../hooks/useTasks'
+import { useDeleteTask } from '../hooks/useDeleteTask'
 import { CreateTaskForm } from '../components/CreateTaskForm'
 import { EditTaskForm } from '../components/EditTaskForm'
 
@@ -11,6 +12,17 @@ export const Route = createLazyFileRoute('/')({
 function Index() {
   const { data, isLoading, error } = useTasks()
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
+  const deleteTask = useDeleteTask()
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('このタスクを削除してもよろしいですか？')) {
+      try {
+        await deleteTask.mutateAsync(id)
+      } catch (error) {
+        console.error('Failed to delete task:', error)
+      }
+    }
+  }
 
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
@@ -55,12 +67,21 @@ function Index() {
                     <span className={task.completed ? 'line-through text-gray-500' : ''}>
                       {task.title}
                     </span>
-                    <button
-                      onClick={() => setEditingTaskId(task.id)}
-                      className="ml-auto text-sm text-indigo-600 hover:text-indigo-800"
-                    >
-                      Edit
-                    </button>
+                    <div className="ml-auto flex gap-2">
+                      <button
+                        onClick={() => setEditingTaskId(task.id)}
+                        className="text-sm text-indigo-600 hover:text-indigo-800"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(task.id)}
+                        className="text-sm text-red-600 hover:text-red-800"
+                        disabled={deleteTask.isPending}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                   {task.description && (
                     <p className="mt-1 text-sm text-gray-600">{task.description}</p>
