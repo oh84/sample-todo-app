@@ -24,7 +24,7 @@ module Mutations
     rescue ActiveRecord::RecordNotFound => _e
       {
         task: nil,
-        errors: ["タスクが見つかりません"]
+        errors: ["Task not found"]
       }
     end
   end
